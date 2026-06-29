@@ -37,3 +37,361 @@
   .img-hint{font-size:11px;color:#888;margin-top:4px;line-height:1.4}
   .visit-card{background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:16px;margin-bottom:8px;transition:box-shadow .15s}
   .visit-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  .visit-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px}
+  .visit-store{font-size:14px;font-weight:600;color:#1a1a1a}
+  .visit-meta{font-size:12px;color:#888;margin-top:2px}
+  .badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+  .badge-visit{background:#e6f4ea;color:#1e7e34}
+  .badge-mystery{background:#ede7f6;color:#512da8}
+  .visit-note{font-size:13px;color:#444;margin-top:8px;line-height:1.5}
+  .visit-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+  .tag{border-radius:20px;padding:2px 9px;font-size:11px;font-weight:500}
+  .tag-ok{background:#e6f4ea;color:#1e7e34;border:1px solid #b7dfbb}
+  .tag-warn{background:#fff3cd;color:#856404;border:1px solid #ffd97d}
+  .tag-bad{background:#fde8e8;color:#b91c1c;border:1px solid #fca5a5}
+  .action-line{font-size:12px;color:#92400e;display:flex;gap:6px;align-items:baseline;margin-top:4px;padding:4px 8px;background:#fffbeb;border-radius:4px}
+  .action-line::before{content:"•";flex-shrink:0}
+  .visit-footer{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid #f0f0f0;flex-wrap:wrap}
+  .img-link{font-size:12px;color:#ff6600;display:inline-flex;align-items:center;gap:4px;text-decoration:none;font-weight:500}
+  .img-link:hover{text-decoration:underline}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+  .metric{background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:16px;text-align:center}
+  .metric-num{font-size:26px;font-weight:700;color:#ff6600}
+  .metric-label{font-size:11px;color:#888;margin-top:2px}
+  .cov-table{width:100%;border-collapse:collapse;font-size:12px}
+  .cov-table th{text-align:left;padding:10px 12px;font-size:11px;font-weight:600;color:#888;background:#fafafa;border-bottom:1px solid #e5e5e5;text-transform:uppercase;letter-spacing:.4px}
+  .cov-table td{padding:8px 12px;border-bottom:1px solid #f0f0f0;color:#1a1a1a}
+  .cov-table tr:hover td{background:#fafafa}
+  .q-cell{text-align:center}
+  .q-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;margin:0 auto;cursor:default}
+  .q-done{background:#e6f4ea;color:#1e7e34;border:1px solid #b7dfbb}
+  .q-empty{background:#f5f5f5;border:1px solid #ddd;color:#bbb}
+  .group-hdr td{font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.6px;padding:14px 12px 4px;background:#fafafa;border-bottom:1px solid #e5e5e5}
+  .filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .filter-row input,.filter-row select{flex:1;min-width:140px}
+  .empty{text-align:center;padding:48px 20px;color:#aaa}
+  .empty-icon{font-size:40px;display:block;margin-bottom:12px}
+  .toast{background:#e6f4ea;color:#1e7e34;border:1px solid #b7dfbb;border-radius:6px;padding:10px 16px;font-size:13px;font-weight:500;margin-bottom:16px;display:none}
+  .section-label{font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+  .divider{height:16px}
+  .store-detail{font-size:12px;color:#555;margin-top:4px;padding-left:2px}
+  .store-detail strong{color:#333}
+  .issue-flag{margin-left:auto;font-size:11px;color:#92400e;font-weight:500}
+  @media(max-width:600px){
+    .form-row,.check-row,.grid-4{grid-template-columns:1fr}
+    .main{padding:16px}
+    .tab{padding:10px 12px;font-size:12px}
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+      FC Store Visit Tracker
+    </div>
+    <div class="header-sub">AU Marketing Team · Log visits, share feedback, track coverage</div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="showTab('feed',this)">Recent visits</button>
+  <button class="tab" onclick="showTab('coverage',this)">Coverage</button>
+  <button class="tab" onclick="showTab('log',this)">Log a visit</button>
+</div>
+
+<div class="main">
+
+  <!-- FEED -->
+  <div id="tab-feed">
+    <div class="filter-row">
+      <input type="text" placeholder="Search by store or person..." oninput="fs=this.value;renderFeed()">
+      <select onchange="ft=this.value;renderFeed()">
+        <option value="">All visit types</option>
+        <option value="visit">Store visit</option>
+        <option value="mystery">Mystery shop</option>
+      </select>
+    </div>
+    <div id="feed-list"></div>
+  </div>
+
+  <!-- COVERAGE -->
+  <div id="tab-coverage" style="display:none">
+    <div class="grid-4" id="cov-stats"></div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="overflow-x:auto">
+        <table class="cov-table">
+          <thead><tr>
+            <th>Name</th><th>Team</th>
+            <th style="text-align:center">Q1 Jul–Sep</th>
+            <th style="text-align:center">Q2 Oct–Dec</th>
+            <th style="text-align:center">Q3 Jan–Mar</th>
+            <th style="text-align:center">Q4 Apr–Jun</th>
+          </tr></thead>
+          <tbody id="cov-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOG -->
+  <div id="tab-log" style="display:none">
+    <div id="toast" class="toast">Visit saved! Head to Recent visits to copy your summary to Teams.</div>
+    <div class="card">
+      <div class="form-row">
+        <div class="form-group" style="margin-bottom:0">
+          <label>Your name</label>
+          <select id="f-person"><option value="">Select...</option></select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label>Store visited</label>
+          <select id="f-store"><option value="">Select store...</option></select>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="form-row">
+        <div class="form-group" style="margin-bottom:0">
+          <label>Visit type</label>
+          <select id="f-type">
+            <option value="visit">Store visit</option>
+            <option value="mystery">Mystery shop</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label>Date</label>
+          <input type="date" id="f-date">
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="section-label">In-store checks</div>
+      <div class="check-row">
+        <div class="check-block">
+          <label>Marketing materials</label>
+          <select id="f-materials" onchange="toggleDetail('mat')">
+            <option value="">— not checked —</option>
+            <option value="good">All good</option>
+            <option value="minor">Minor issues</option>
+            <option value="issues">Needs attention</option>
+          </select>
+          <div class="detail-box" id="mat-detail">
+            <textarea id="f-mat-detail" placeholder="What needs attention? Wrong campaign, missing materials, incorrect dates..."></textarea>
+          </div>
+        </div>
+        <div class="check-block">
+          <label>Digital screen</label>
+          <select id="f-screen" onchange="toggleDetail('screen')">
+            <option value="">— not checked —</option>
+            <option value="good">Working, correct content</option>
+            <option value="wrong">Wrong content</option>
+            <option value="off">Not working / off</option>
+          </select>
+          <div class="detail-box" id="screen-detail">
+            <textarea id="f-screen-detail" placeholder="What was showing? What should it show?"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="form-group">
+        <label>Feedback / observations</label>
+        <textarea id="f-notes" placeholder="What did you find? What went well, what needs attention..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Action items (one per line)</label>
+        <textarea id="f-actions" placeholder="e.g. Screen not working — follow up with Caitlin&#10;e.g. Send updated campaign materials to TL" style="min-height:60px"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Photos link</label>
+        <input type="url" id="f-imglink" placeholder="Paste Google Drive or SharePoint folder link...">
+        <div class="img-hint">Upload your store photos to Drive or SharePoint first, then paste the shared folder link here.</div>
+      </div>
+      <button class="btn-primary" onclick="submitVisit()">Save visit</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const STORES=["25 MARTIN PLACE","278 COLLINS ST","AIRPORT WEST","ALBANY","ALBURY","ALTONA","ARMADALE WA","ARMIDALE","ASCOT","ASHBURTON","ASHGROVE","ASPLEY","BACCHUS MARSH","BALDIVIS","BALGOWLAH","BALLARAT","BALLINA","BALWYN","BARANGAROO","BARKLY SQUARE","BAROSSA VALLEY","BATEAU BAY","BAULKHAM HILLS","BAY CENTRAL","BAY CITY GEELONG","BAYSIDE","BEAUDESERT","BEENLEIGH","BEGA","BELCONNEN","BELMONT","BENDIGO","BENOWA VILLAGE","BENTLEIGH","BENTONS SQUARE","BERWICK","BIRKENHEAD POINT","BLACKTOWN","BONDI WESTFIELD","BOWRAL","BRIBIE ISLAND","BRIDGEPOINT","BRIGHTON","BRISBANE AIRPORT","BROADMEADOWS","BROADWAY","BROOKSIDE","BROWNS PLAINS","BUDERIM","BULIMBA","BUNBURY FORUM","BUNDABERG CITY","BURLEIGH TOWN","BURNSIDE","BURWOOD","BUSSELTON","BYRON BAY","CAIRNS CENTRAL","CALOUNDRA","CAMBERWELL","CAMDEN","CANBERRA CENTRE","CAPALABA","CARDIFF","CARINDALE","CARLINGFORD COURT","CARNES HILL","CAROLINE SPRINGS","CAROUSEL","CASEY CENTRAL","CASTLE HILL","CASUARINA","CENTREPOINT","CHADSTONE","CHARLESTOWN","CHATSWOOD","CHERMSIDE","CHERRYBROOK","CHIRNSIDE PARK","CLEVELAND","CLIFFORD GARDENS","COLONNADES","COOMERA","CORRIMAL","CRAIGIEBURN","CRANBOURNE","CRONULLA","CROYDON","CURRIMUNDI","DARLINGHURST","DEVONPORT","DONCASTER","DUBBO","EAGLE STREET","EASTGARDENS","EASTLAND","EATON","ECHUCA","ELIZABETH","ELTHAM","ELWOOD","EPPING PLAZA","ERINA","ESPERANCE","FIGTREE","FLOREAT","FOREST HILL","FOREST LAKE","FORESTWAY","FORSTER","FOUNTAIN GATE","GALLERIA","GARDEN CITY","GARDEN CITY (WA)","GATEWAYS","GEORGE ST SYDNEY","GERALDTON","GIPPSLAND","GLADSTONE","GLEN WAVERLEY","GLENELG","GLENORCHY","GOLDEN GROVE","GORDON","GOULBURN","GREENSBOROUGH","GREENSLOPES","GRIFFITH","GUNGAHLIN","GYMEA","HALLETT COVE","HAMILTON","HAMPTON","HASTINGS","HAWTHORN","HELENSVALE","HIGHPOINT","HOBART","HORNSBY","HUNTER VALLEY","HURSTVILLE","INDOOROOPILLY","IPSWICH","IVANHOE","JOONDALUP","KALAMUNDA","KARINGAL HUB","KARRINYUP","KAWANA","KENMORE","KEW","KINGSTON","KIPPA-RING","KNOX CITY","KOTARA","LAKE HAVEN","LANSELL SQUARE","LAUNCESTON","LAVINGTON","LEICHHARDT","LEOPOLD","LIDCOMBE","LILYDALE","LISMORE","LIVERPOOL","LIVINGSTON","LOGANHOLME","LUTWYCHE","MACARTHUR SQUARE","MACKAY","MACQUARIE","MAITLAND","MALVERN","MANDURAH","MARION","MELBOURNE AIRPORT","MELTON","MENAI","MIAMI PLAZA","MIDLAND GATE","MILDURA","MIRANDA","MIRRABOOKA","MODBURY TEA TREE PLAZA","MONA VALE","MOONEE PONDS","MORAYFIELD","MORDIALLOC","MORNINGTON","MOUNT BARKER","MT DRUITT","MT ELIZA","MT GAMBIER","MT OMMANEY","MT PLEASANT","MURRAY BRIDGE","MURRAY STREET MALL","NAMBOUR","NARELLAN","NOOSA CIVIC","NOOSA FAIR","NORTH BRIGHTON","NORTH ESSENDON","NORTH LAKES","NORTH SYDNEY","NORTHBRIDGE","NORTHLAND","NORWOOD","NOWRA","OCEAN KEYS","ORANGE","ORION SPRINGFIELD","PACIFIC FAIR","PADDINGTON","PAKENHAM","PARKMORE","PARRAMATTA","PATTERSON LAKES","PENRITH PLAZA","PICTON","PLENTY VALLEY","POINT COOK","PORT LINCOLN","PORT MACQUARIE","QUEANBEYAN","QUEEN STREET MALL","REDBANK","RENMARK","REVESBY","RICHMOND NSW","ROBINA","ROCKDALE","ROCKHAMPTON","ROCKINGHAM","ROSE CITY WARWICK","ROSEBUD","ROUSE HILL","RUNAWAY BAY","RUNDLE MALL","SALAMANDER BAY","SAMFORD","SHELLHARBOUR","SHEPPARTON","SMITHFIELD","SOUTH BANK","SOUTHGATE NSW","SOUTHLAND","SOUTHLANDS BOULEVARD","SOUTHPORT","SPRINGWOOD","ST JAMES","STRATHPINE","STUD PARK","SUNBURY","SUNNYBANK HILLS","SUNSHINE PLAZA","SYDNEY INTERNATIONAL AIRPORT","TAMWORTH","TAREE","TERRIGAL","THE JUNCTION","THE PINES","THE PINES ELANORA","TOORMINA","TOOWONG","TOOWOOMBA","TORONTO","TORQUAY","TOWNSVILLE","TOWNSVILLE CASTLETOWN","TOWNSVILLE WILLOWS","TUGGERAH","TWEED CITY","ULLADULLA","UNLEY","VIC CITY","VICTOR HARBOR","VICTORIA POINT","WAGGA WAGGA","WANNEROO","WARRAGUL","WARRIEWOOD","WARRINGAH MALL","WARRNAMBOOL","WARWICK","WATERGARDENS","WAURN PONDS","WENDOUREE","WERRIBEE PACIFIC","WEST LAKES","WETHERILL PARK","WHITFORD CITY","WHITSUNDAY","WILLIAMSTOWN","WINDSOR","WODEN","WODONGA","WOLLONGONG","WYNNUM PLAZA","YAMANTO","YARRAVILLE","YEPPOON","ZETLAND"];
+
+const TEAM={
+  "Retail Ads":["Rach","Bhavna","Meagan A","Skye","Meagan B","Emma N","Hayley"],
+  "Creative & Brand":["Emma L","Andrea","Pearl","Ileana","Aidan","Ben","Caitlin"],
+  "Automation":["Gabby","Rachael K","Sarah G"],
+  "DigiCon":["Rob","Mel","Sam","Chelsea","Luke","Ryan","Jess"],
+  "SEO & Web":["Kyle","Jon","Amanda","Sarah"],
+  "Analytics":["Matt","Dyllan"],
+  "MarTech":["Lisa"],
+  "Lead & Channeling":["Michelle","Nicola","Curtis","Mike","Sarah Gow"],
+  "Product Experience":["Sara","Justine","Ash","Timmy"],
+  "Finance":["Emma J"],
+  "Other / FCBT":["Rachel T"]
+};
+
+const ALL_PEOPLE=Object.entries(TEAM).flatMap(([g,ms])=>ms.map(m=>({name:m,group:g})));
+const PERSON_GROUP={};ALL_PEOPLE.forEach(p=>PERSON_GROUP[p.name]=p.group);
+
+function getQ(d){const m=new Date(d).getMonth();if(m>=6&&m<=8)return'Q1';if(m>=9&&m<=11)return'Q2';if(m>=0&&m<=2)return'Q3';return'Q4';}
+
+let fs='',ft='';
+
+function toggleDetail(type){
+  const v=document.getElementById('f-'+type).value;
+  const show=(type==='mat'&&(v==='minor'||v==='issues'))||(type==='screen'&&(v==='wrong'||v==='off'));
+  document.getElementById(type+'-detail').style.display=show?'block':'none';
+}
+
+// Storage — uses localStorage since this is a standalone file
+function load(){try{const r=localStorage.getItem('fc_visits_v2');return r?JSON.parse(r):[];}catch(e){return[];}}
+function save(v){try{localStorage.setItem('fc_visits_v2',JSON.stringify(v));}catch(e){}}
+
+function buildTeamsMsg(v){
+  const matL={good:'✅ Materials — all good',minor:'⚠️ Materials — minor issues',issues:'🔴 Materials — needs attention'};
+  const scrL={good:'✅ Screen — working, correct content',wrong:'⚠️ Screen — wrong content showing',off:'🔴 Screen — not working / off'};
+  let msg='📍 Store visit — FC '+v.store+'\n';
+  msg+='👤 '+v.person+' · '+(v.type==='mystery'?'Mystery shop':'Store visit')+' · '+v.date+'\n';
+  if(v.materials)msg+='\n'+matL[v.materials];
+  if(v.matDetail)msg+='\n   '+v.matDetail;
+  if(v.screen)msg+='\n'+(v.materials?'':'\n')+scrL[v.screen];
+  if(v.screenDetail)msg+='\n   '+v.screenDetail;
+  if(v.notes)msg+='\n\n💬 '+v.notes;
+  if(v.actions){const lines=v.actions.split('\n').filter(Boolean);if(lines.length){msg+='\n\n📋 Action items:\n';lines.forEach(a=>msg+='• '+a+'\n');}}
+  if(v.imglink)msg+='\n📸 Photos: '+v.imglink;
+  return msg.trim();
+}
+
+function copyTeams(id,btn){
+  const visits=load();
+  const v=visits.find(x=>x.id===id);
+  if(!v)return;
+  navigator.clipboard.writeText(buildTeamsMsg(v)).then(()=>{
+    btn.innerHTML=svgTeams()+' Copied!';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.innerHTML=svgTeams()+' Copy for Teams';btn.classList.remove('copied');},2000);
+  }).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=buildTeamsMsg(v);document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    btn.innerHTML=svgTeams()+' Copied!';btn.classList.add('copied');
+    setTimeout(()=>{btn.innerHTML=svgTeams()+' Copy for Teams';btn.classList.remove('copied');},2000);
+  });
+}
+
+function svgTeams(){return'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.625 7.5h-8.25A.375.375 0 0 0 12 7.875V9h9v-.5a1 1 0 0 0-1-1zM12 9v7.125c0 .207.168.375.375.375h7.25A1.375 1.375 0 0 0 21 15.125V9h-9zM8.5 4a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zm0 6C6.015 10 4 11.79 4 14v1h9v-1c0-2.21-2.015-4-4.5-4z"/></svg>';}
+
+async function renderFeed(){
+  const visits=load();
+  const list=document.getElementById('feed-list');
+  const filtered=visits.filter(v=>{
+    const s=fs.toLowerCase();
+    return(!s||v.store.toLowerCase().includes(s)||v.person.toLowerCase().includes(s))&&(!ft||v.type===ft);
+  });
+  if(!filtered.length){
+    list.innerHTML='<div class="empty"><span class="empty-icon">📋</span>No visits logged yet — use "Log a visit" to add the first one</div>';
+    return;
+  }
+  const matL={good:'Materials good',minor:'Materials — minor issues',issues:'Materials need attention'};
+  const scrL={good:'Screen OK',wrong:'Screen — wrong content',off:'Screen not working'};
+  const matTag=v=>v.materials?`<span class="tag ${v.materials==='good'?'tag-ok':v.materials==='minor'?'tag-warn':'tag-bad'}">${matL[v.materials]}</span>`:'';
+  const scrTag=v=>v.screen?`<span class="tag ${v.screen==='good'?'tag-ok':v.screen==='wrong'?'tag-warn':'tag-bad'}">${scrL[v.screen]}</span>`:'';
+  const hasIssue=v=>(v.materials&&v.materials!=='good')||(v.screen&&v.screen!=='good');
+
+  list.innerHTML=filtered.map(v=>{
+    const actions=v.actions?v.actions.split('\n').filter(Boolean):[];
+    return`<div class="visit-card">
+      <div class="visit-header">
+        <div style="flex:1;min-width:0">
+          <div class="visit-store">FC ${v.store}</div>
+          <div class="visit-meta">${v.person} · ${PERSON_GROUP[v.person]||''} · ${v.quarter||getQ(v.date)} · ${v.date}</div>
+        </div>
+        <span class="badge ${v.type==='mystery'?'badge-mystery':'badge-visit'}">${v.type==='mystery'?'Mystery shop':'Store visit'}</span>
+      </div>
+      ${v.materials||v.screen?`<div class="visit-tags">${matTag(v)}${scrTag(v)}</div>`:''}
+      ${v.matDetail?`<div class="store-detail"><strong>Materials:</strong> ${v.matDetail}</div>`:''}
+      ${v.screenDetail?`<div class="store-detail"><strong>Screen:</strong> ${v.screenDetail}</div>`:''}
+      ${v.notes?`<div class="visit-note">${v.notes}</div>`:''}
+      ${actions.length?`<div style="margin-top:8px">${actions.map(a=>`<div class="action-line">${a}</div>`).join('')}</div>`:''}
+      <div class="visit-footer">
+        <button class="btn-teams" onclick="copyTeams(${v.id},this)">${svgTeams()} Copy for Teams</button>
+        ${v.imglink?`<a href="${v.imglink}" class="img-link" target="_blank">📸 View photos</a>`:''}
+        ${hasIssue(v)?`<span class="issue-flag">⚠️ Has action items</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCoverage(){
+  const visits=load();
+  const byP={};
+  visits.forEach(v=>{if(!byP[v.person])byP[v.person]={};const q=v.quarter||getQ(v.date);byP[v.person][q]=(byP[v.person][q]||[]).concat(v.store);});
+  const total=ALL_PEOPLE.length;
+  const visited=ALL_PEOPLE.filter(p=>byP[p.name]&&Object.keys(byP[p.name]).length>0).length;
+  const full=ALL_PEOPLE.filter(p=>['Q1','Q2','Q3','Q4'].every(q=>byP[p.name]&&byP[p.name][q])).length;
+  document.getElementById('cov-stats').innerHTML=`
+    <div class="metric"><div class="metric-num">${visits.length}</div><div class="metric-label">Total visits logged</div></div>
+    <div class="metric"><div class="metric-num">${visited}</div><div class="metric-label">People visited</div></div>
+    <div class="metric"><div class="metric-num">${total-visited}</div><div class="metric-label">Yet to visit</div></div>
+    <div class="metric"><div class="metric-num">${full}</div><div class="metric-label">All 4 quarters done</div></div>`;
+  let rows='';
+  Object.entries(TEAM).forEach(([g,ms])=>{
+    rows+=`<tr class="group-hdr"><td colspan="6">${g}</td></tr>`;
+    ms.forEach(name=>{
+      const pv=byP[name]||{};
+      const qc=['Q1','Q2','Q3','Q4'].map(q=>{
+        const s=pv[q];
+        return`<td class="q-cell"><div class="q-dot ${s?'q-done':'q-empty'}" title="${s?s.join(', '):''}">${s?s.length:'—'}</div></td>`;
+      }).join('');
+      rows+=`<tr><td style="font-weight:600">${name}</td><td style="color:#888;font-size:11px">${PERSON_GROUP[name]||''}</td>${qc}</tr>`;
+    });
+  });
+  document.getElementById('cov-body').innerHTML=rows;
+}
+
+function submitVisit(){
+  const person=document.getElementById('f-person').value;
+  const store=document.getElementById('f-store').value;
+  const date=document.getElementById('f-date').value;
+  if(!person||!store||!date){alert('Please fill in your name, the store, and the date.');return;}
+  const visits=load();
+  visits.unshift({id:Date.now(),person,store,date,
+    type:document.getElementById('f-type').value,
+    materials:document.getElementById('f-materials').value,
+    matDetail:document.getElementById('f-mat-detail').value.trim(),
+    screen:document.getElementById('f-screen').value,
+    screenDetail:document.getElementById('f-screen-detail').value.trim(),
+    notes:document.getElementById('f-notes').value.trim(),
+    actions:document.getElementById('f-actions').value.trim(),
+    imglink:document.getElementById('f-imglink').value.trim(),
+    quarter:getQ(date)
+  });
+  save(visits);
+  ['f-notes','f-actions','f-imglink','f-mat-detail','f-screen-detail'].forEach(id=>document.getElementById(id).value='');
+  ['f-materials','f-screen'].forEach(id=>document.getElementById(id).value='');
+  ['mat-detail','screen-detail'].forEach(id=>document.getElementById(id).style.display='none');
+  const t=document.getElementById('toast');t.style.display='block';setTimeout(()=>t.style.display='none',3000);
+  showTab('feed',document.querySelector('.tab'));
+}
+
+function showTab(tab,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  if(el)el.classList.add('active');
+  ['feed','coverage','log'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'block':'none');
+  if(tab==='feed')renderFeed();
+  if(tab==='coverage')renderCoverage();
+}
+
+function init(){
+  const ps=document.getElementById('f-person');
+  Object.entries(TEAM).forEach(([g,ms])=>{
+    const og=document.createElement('optgroup');og.label=g;
+    ms.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;og.appendChild(o);});
+    ps.appendChild(og);
+  });
+  const ss=document.getElementById('f-store');
+  STORES.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent='FC '+s.charAt(0)+s.slice(1).toLowerCase();ss.appendChild(o);});
+  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+  renderFeed();
+}
+init();
+</script>
+</body>
+</html>

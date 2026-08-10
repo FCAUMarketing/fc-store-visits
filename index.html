@@ -59,18 +59,25 @@ textarea{resize:vertical;min-height:72px}
 .metric{background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:16px;text-align:center}
 .metric-num{font-size:26px;font-weight:700;color:#D40119}
 .metric-label{font-size:11px;color:#888;margin-top:2px}
+.team-cov-block{background:#fff;border:1px solid #e5e5e5;border-radius:8px;margin-bottom:8px;overflow:hidden}
+.team-cov-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;user-select:none}
+.team-cov-header:hover{background:#fafafa}
+.team-cov-name{font-size:13px;font-weight:700;color:#1a1a1a}
+.team-cov-summary{font-size:12px;color:#888;margin-left:auto;margin-right:12px}
+.team-cov-chevron{font-size:12px;color:#bbb;transition:transform .2s}
+.team-cov-chevron.open{transform:rotate(180deg)}
+.team-cov-body{display:none;border-top:1px solid #f0f0f0}
+.team-cov-body.open{display:block}
 .cov-table{width:100%;border-collapse:collapse;font-size:12px}
-.cov-table th{text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:#fff;background:#2C3E50;border-bottom:none;text-transform:uppercase;letter-spacing:.4px}
-.cov-table th.fy26{background:#D40119}
-.cov-table th.sub{background:#3d5166;color:#ccc;font-size:9px}
-.cov-table th.sub26{background:#a80014;color:#ffc;font-size:9px}
-.cov-table td{padding:7px 10px;border-bottom:1px solid #f0f0f0;color:#1a1a1a}
-.cov-table tr:hover td{background:#fafafa}
-.q-cell{text-align:center}
-.q-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin:0 auto}
-.q-done{background:#D40119;color:#fff}
-.q-empty{background:#f5f5f5;border:1px solid #ddd;color:#bbb}
-.group-hdr td{font-size:10px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.6px;padding:8px 12px;background:#D40119}
+.cov-table th{text-align:center;padding:8px 10px;font-size:10px;font-weight:600;color:#888;background:#fafafa;border-bottom:1px solid #eee}
+.cov-table th.th-name{text-align:left;color:#555}
+.cov-table td{padding:8px 10px;border-bottom:0.5px solid #f5f5f5;color:#1a1a1a;height:auto}
+.cov-table tr:last-child td{border-bottom:none}
+.q-cell{text-align:center;vertical-align:middle;padding:10px 8px !important}
+.q-pip{display:inline-block;width:10px;height:10px;min-width:10px;min-height:10px;border-radius:50%;vertical-align:middle}
+.q-pip.done{background:#4caf50}
+.q-pip.empty{background:#e0e0e0}
+.q-pip-label{font-size:11px;color:#888;margin-left:3px;vertical-align:middle}
 .filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
 .filter-row input,.filter-row select{flex:1;min-width:140px;padding:8px 10px;font-size:13px;border:1px solid #ddd;border-radius:6px;background:#fff;color:#1a1a1a}
 .empty{text-align:center;padding:48px 20px;color:#aaa}
@@ -80,6 +87,16 @@ textarea{resize:vertical;min-height:72px}
 .divider{height:16px}
 .issue-flag{margin-left:auto;font-size:11px;color:#D40119;font-weight:600}
 .red-bar{height:4px;background:#D40119}
+.store-search-wrap{position:relative}
+.store-search-input{width:100%;padding:8px 10px;font-size:13px;border:1px solid #ddd;border-radius:6px;background:#fff;color:#1a1a1a;font-family:inherit}
+.store-search-input:focus{outline:none;border-color:#D40119;box-shadow:0 0 0 3px rgba(212,1,25,.1)}
+.store-dropdown{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #D40119;border-top:none;border-radius:0 0 6px 6px;max-height:220px;overflow-y:auto;z-index:999;display:none;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.store-dropdown.open{display:block}
+.store-opt{padding:8px 12px;font-size:13px;color:#1a1a1a;cursor:pointer;border-bottom:0.5px solid #f0f0f0}
+.store-opt:hover{background:#fde8e8;color:#D40119}
+.store-opt .store-opt-state{font-size:10px;color:#888;float:right;margin-top:2px}
+.store-opt.selected{background:#D40119;color:#fff}
+.store-opt.selected .store-opt-state{color:rgba(255,255,255,.7)}
 .checklist-item{display:flex;align-items:flex-start;gap:10px;padding:7px 0;font-size:13px;color:#333;border-bottom:1px solid #eee}
 .checklist-item:last-of-type{border-bottom:none}
 .checklist-item input[type=checkbox]{width:18px;height:18px;margin-top:1px;accent-color:#D40119;flex-shrink:0;cursor:pointer}
@@ -190,11 +207,19 @@ select,input,textarea,button{-webkit-tap-highlight-color:rgba(212,1,25,.15);touc
       <div class="form-row">
         <div class="form-group" style="margin-bottom:0">
           <label>Who</label>
-          <select id="s-person"><option value="">Select...</option></select>
+          <div class="store-search-wrap" id="s-person-wrap">
+            <input type="text" class="store-search-input" id="s-person-input" placeholder="Search or type your name..." autocomplete="off" oninput="filterPersonDropdown('s')" onfocus="openPersonDropdown('s')" onblur="closePersonDropdown('s')">
+            <input type="hidden" id="s-person">
+            <div class="store-dropdown" id="s-person-dropdown"></div>
+          </div>
         </div>
         <div class="form-group" style="margin-bottom:0">
           <label>Store</label>
-          <select id="s-store"><option value="">Select store...</option></select>
+          <div class="store-search-wrap" id="s-store-wrap">
+            <input type="text" class="store-search-input" id="s-store-input" placeholder="Search store..." autocomplete="off" oninput="filterStoreDropdown('s')" onfocus="openStoreDropdown('s')" onblur="closeStoreDropdown('s')">
+            <input type="hidden" id="s-store">
+            <div class="store-dropdown" id="s-store-dropdown"></div>
+          </div>
         </div>
       </div>
       <div class="divider"></div>
@@ -221,32 +246,9 @@ select,input,textarea,button{-webkit-tap-highlight-color:rgba(212,1,25,.15);touc
   </div>
 
   <div id="tab-coverage" style="display:none">
-    <div class="grid-4" id="cov-stats"></div>
-    <div class="card" style="padding:0;overflow:hidden">
-      <div style="overflow-x:auto">
-        <table class="cov-table">
-          <thead>
-            <tr>
-              <th rowspan="2" style="background:#1a1a2e;min-width:120px">Name</th>
-              <th rowspan="2" style="background:#1a1a2e">Team</th>
-              <th colspan="4" style="text-align:center">FY 2025&ndash;26</th>
-              <th colspan="4" class="fy26" style="text-align:center">FY 2026&ndash;27</th>
-            </tr>
-            <tr>
-              <th class="sub" style="text-align:center">Q1 Jul&ndash;Sep</th>
-              <th class="sub" style="text-align:center">Q2 Oct&ndash;Dec</th>
-              <th class="sub" style="text-align:center">Q3 Jan&ndash;Mar</th>
-              <th class="sub" style="text-align:center">Q4 Apr&ndash;Jun</th>
-              <th class="sub26" style="text-align:center">Q1 Jul&ndash;Sep</th>
-              <th class="sub26" style="text-align:center">Q2 Oct&ndash;Dec</th>
-              <th class="sub26" style="text-align:center">Q3 Jan&ndash;Mar</th>
-              <th class="sub26" style="text-align:center">Q4 Apr&ndash;Jun</th>
-            </tr>
-          </thead>
-          <tbody id="cov-body"></tbody>
-        </table>
-      </div>
-    </div>
+    <div class="grid-4" id="cov-stats" style="grid-template-columns:repeat(3,1fr)"></div>
+    <div style="font-size:12px;color:#888;margin-bottom:12px">FY 2026 &mdash; target: one store visit per quarter. Click a team to expand.</div>
+    <div id="cov-body"></div>
   </div>
 
   <div id="tab-log" style="display:none">
@@ -255,11 +257,19 @@ select,input,textarea,button{-webkit-tap-highlight-color:rgba(212,1,25,.15);touc
       <div class="form-row">
         <div class="form-group" style="margin-bottom:0">
           <label>Your name</label>
-          <select id="f-person"><option value="">Select...</option></select>
+          <div class="store-search-wrap" id="f-person-wrap">
+            <input type="text" class="store-search-input" id="f-person-input" placeholder="Search or type your name..." autocomplete="off" oninput="filterPersonDropdown('f')" onfocus="openPersonDropdown('f')" onblur="closePersonDropdown('f')">
+            <input type="hidden" id="f-person">
+            <div class="store-dropdown" id="f-person-dropdown"></div>
+          </div>
         </div>
         <div class="form-group" style="margin-bottom:0">
           <label>Store visited</label>
-          <select id="f-store"><option value="">Select store...</option></select>
+          <div class="store-search-wrap" id="f-store-wrap">
+            <input type="text" class="store-search-input" id="f-store-input" placeholder="Search store..." autocomplete="off" oninput="filterStoreDropdown('f')" onfocus="openStoreDropdown('f')" onblur="closeStoreDropdown('f')">
+            <input type="hidden" id="f-store">
+            <div class="store-dropdown" id="f-store-dropdown"></div>
+          </div>
         </div>
       </div>
       <div class="divider"></div>
@@ -310,7 +320,7 @@ var EXISTING_VISITS = [{"id": 1000011, "person": "Sara", "store": "LUTWYCHE", "d
 var STORES_BY_STATE={"NSW":["25 MARTIN PLACE", "ALBURY", "ARMIDALE", "BALGOWLAH", "BALLINA", "BARANGAROO", "BATEAU BAY", "BAULKHAM HILLS", "BEGA", "BIRKENHEAD POINT", "BLACKTOWN", "BONDI WESTFIELD", "BOWRAL", "BRIDGEPOINT", "BROADWAY", "BURWOOD", "BYRON BAY", "CAMDEN", "CARDIFF", "CARLINGFORD COURT", "CARNES HILL", "CASTLE HILL", "CHARLESTOWN", "CHATSWOOD", "CHERRYBROOK", "CORRIMAL", "CRONULLA", "DARLINGHURST", "DUBBO", "EASTGARDENS", "ERINA", "FIGTREE", "FORESTWAY", "FORSTER", "Flight Centre Marrickville", "GEORGE ST SYDNEY", "GORDON", "GOULBURN", "GRIFFITH", "GYMEA", "HORNSBY", "HUNTER VALLEY", "HURSTVILLE", "KOTARA", "LAKE HAVEN", "LAVINGTON", "LEICHHARDT", "LIDCOMBE", "LISMORE", "LIVERPOOL", "MACARTHUR SQUARE", "MACQUARIE", "MAITLAND", "MENAI", "MIRANDA", "MONA VALE", "MT DRUITT", "NARELLAN", "NORTH SYDNEY", "NORTHBRIDGE", "NOWRA", "ORANGE", "PARRAMATTA", "PENRITH PLAZA", "PICTON", "PORT MACQUARIE", "QUEANBEYAN", "REVESBY", "RICHMOND NSW", "ROCKDALE", "ROUSE HILL", "SALAMANDER BAY", "SHELLHARBOUR", "SOUTHGATE NSW", "SPRINGWOOD", "SYDNEY INTERNATIONAL AIRPORT", "TAMWORTH", "TAREE", "TERRIGAL", "THE JUNCTION", "TOORMINA", "TORONTO", "TUGGERAH", "TWEED CITY", "ULLADULLA", "WAGGA WAGGA", "WARRIEWOOD", "WARRINGAH MALL", "WETHERILL PARK", "WINDSOR", "WOLLONGONG", "ZETLAND"],"VIC":["278 COLLINS ST", "AIRPORT WEST", "ALTONA", "ASHBURTON", "BACCHUS MARSH", "BALLARAT", "BALWYN", "BARKLY SQUARE", "BAY CITY GEELONG", "BAYSIDE", "BENDIGO", "BENTLEIGH", "BENTONS SQUARE", "BERWICK", "BRIGHTON", "BROADMEADOWS", "CAMBERWELL", "CAROLINE SPRINGS", "CASEY CENTRAL", "CHADSTONE", "CHIRNSIDE PARK", "CRAIGIEBURN", "CRANBOURNE", "CROYDON", "DONCASTER", "EASTLAND", "ECHUCA", "ELTHAM", "ELWOOD", "EPPING PLAZA", "FOREST HILL", "FOUNTAIN GATE", "Flight Centre Waverley Gardens", "GIPPSLAND", "GLEN WAVERLEY", "GREENSBOROUGH", "HAMILTON", "HAMPTON", "HASTINGS", "HAWTHORN", "HIGHPOINT", "IVANHOE", "KARINGAL HUB", "KEW", "KNOX CITY", "LANSELL SQUARE", "LEOPOLD", "LILYDALE", "MALVERN", "MELBOURNE AIRPORT", "MELTON", "MILDURA", "MOONEE PONDS", "MORDIALLOC", "MORNINGTON", "MT ELIZA", "NORTH BRIGHTON", "NORTH ESSENDON", "NORTHLAND", "PAKENHAM", "PARKMORE", "PATTERSON LAKES", "PLENTY VALLEY", "POINT COOK", "ROSEBUD", "SHEPPARTON", "SOUTHLAND", "ST JAMES", "STUD PARK", "SUNBURY", "THE PINES", "TORQUAY", "VIC CITY", "WARRAGUL", "WARRNAMBOOL", "WATERGARDENS", "WAURN PONDS", "WENDOUREE", "WERRIBEE PACIFIC", "WILLIAMSTOWN", "WODONGA", "YARRAVILLE"],"QLD":["ASCOT", "ASHGROVE", "ASPLEY", "BAY CENTRAL", "BEAUDESERT", "BEENLEIGH", "BENOWA VILLAGE", "BRIBIE ISLAND", "BRISBANE AIRPORT", "BROOKSIDE", "BROWNS PLAINS", "BUDERIM", "BULIMBA", "BUNDABERG CITY", "BURLEIGH TOWN", "CAIRNS CENTRAL", "CALOUNDRA", "CANNON HILL", "CAPALABA", "CARINDALE", "CHERMSIDE", "CLEVELAND", "CLIFFORD GARDENS", "COOMERA", "CURRIMUNDI", "EAGLE STREET", "FOREST LAKE", "Flight Centre Redbank Plains", "GARDEN CITY", "GLADSTONE", "GREENSLOPES", "HELENSVALE", "INDOOROOPILLY", "IPSWICH", "KAWANA", "KENMORE", "KIPPA-RING", "LOGANHOLME", "LUTWYCHE", "MACKAY", "MORAYFIELD", "MT OMMANEY", "MT PLEASANT", "NAMBOUR", "NOOSA CIVIC", "NOOSA FAIR", "NORTH LAKES", "ORION SPRINGFIELD", "PACIFIC FAIR", "PADDINGTON", "QUEEN STREET MALL", "REDBANK", "ROBINA", "ROCKHAMPTON", "ROSE CITY WARWICK", "RUNAWAY BAY", "SAMFORD", "SMITHFIELD", "SOUTH BANK", "SOUTHPORT", "STRATHPINE", "SUNNYBANK HILLS", "SUNSHINE PLAZA", "THE PINES ELANORA", "TOOWONG", "TOOWOOMBA", "TOWNSVILLE", "TOWNSVILLE CASTLETOWN", "TOWNSVILLE WILLOWS", "VICTORIA POINT", "WHITSUNDAY", "WYNNUM PLAZA", "YAMANTO", "YEPPOON"],"WA":["ALBANY", "ARMADALE WA", "BALDIVIS", "BELMONT", "BUNBURY FORUM", "BUSSELTON", "CAROUSEL", "EATON", "ESPERANCE", "FIRST & BUSINESS CLAREMONT", "FIRST & BUSINESS COTTESLOE", "FLOREAT", "Flight Centre Armadale", "GALLERIA", "GARDEN CITY (WA)", "GATEWAYS", "GERALDTON", "JOONDALUP", "KALAMUNDA", "KARRINYUP", "LIVINGSTON", "MANDURAH", "MIAMI PLAZA", "MIDLAND GATE", "MIRRABOOKA", "MURRAY STREET MALL", "Mt LAWLEY", "OCEAN KEYS", "ROCKINGHAM", "SOUTHLANDS BOULEVARD", "WANNEROO", "WARWICK", "WHITFORD CITY"],"SA":["BAROSSA VALLEY", "BURNSIDE", "COLONNADES", "ELIZABETH", "GLENELG", "GOLDEN GROVE", "HALLETT COVE", "MARION", "MODBURY TEA TREE PLAZA", "MOUNT BARKER", "MT GAMBIER", "MURRAY BRIDGE", "NORWOOD", "PORT LINCOLN", "RENMARK", "RUNDLE MALL", "UNLEY", "VICTOR HARBOR", "WEST LAKES"],"TAS":["CENTREPOINT", "DEVONPORT", "GLENORCHY", "HOBART", "HOBART AIRPORT", "KINGSTON", "LAUNCESTON"],"ACT":["BELCONNEN", "CANBERRA CENTRE", "GUNGAHLIN", "WODEN"],"NT":["CASUARINA", "Flight Centre Gateway Palmerston"]};
 var STORES=Object.values(STORES_BY_STATE).flat();
 
-var TEAM={"SWOT":["Megs","Starky","Mon","Sean","Brian","David","Katrina","Cowboy","Brent"],"Retail Ads":["Rach","Bhavna","Meagan A","Skye","Meagan B","Emma N","Hayley"],"Creative & Brand":["Emma L","Andrea","Pearl","Ileana","Aidan","Ben","Caitlin"],"Automation":["Gabby","Rachael K","Sarah G"],"DigiCon":["Rob","Mel","Sam","Chelsea","Luke","Ryan","Jess"],"SEO & Web":["Kyle","Jon","Amanda","Sarah"],"Analytics":["Matt","Dyllan"],"MarTech":["Lisa"],"Lead & Channeling":["Michelle","Nicola","Curtis","Mike","Sarah Gow"],"Product Experience":["Sara","Justine","Ash","Timmy"],"Finance":["Emma J"],"Other / FCBT":["Rachel C"]};
+var TEAM={"SWOT":["Megs","Starky","Mon","Sean","Brian","David","Katrina","Cowboy","Brent"],"Retail Ads":["Rach","Bhavna","Meagan A","Skye","Meagan B","Emma N","Hayley"],"Creative & Brand":["Emma L","Andrea","Pearl","Ileana","Aidan","Ben","Caitlin"],"DigiCon":["Rob","Mel","Sam","Chelsea","Luke","Ryan","Jess"],"MOPS":["Gabby","Rachael K","Sarah G","Kyle","Jon","Amanda","Sarah","Matt","Dyllan","Lisa"],"Product Experience":["Sara","Justine","Ash","Timmy"],"Finance":["Emma J"],"FCBT":["Rachel C"]};
 
 var ALL_PEOPLE=Object.entries(TEAM).flatMap(function(e){return e[1].map(function(m){return{name:m,group:e[0]};});});
 var PERSON_GROUP={};ALL_PEOPLE.forEach(function(p){PERSON_GROUP[p.name]=p.group;});
@@ -530,6 +540,13 @@ function renderFeed(){
 }
 
 // ── Render coverage ───────────────────────────────────────────────
+function toggleTeamCov(id){
+  var body=document.getElementById('cov-body-'+id);
+  var chev=document.getElementById('cov-chev-'+id);
+  if(body.classList.contains('open')){body.classList.remove('open');chev.classList.remove('open');}
+  else{body.classList.add('open');chev.classList.add('open');}
+}
+
 function renderCoverage(){
   var visits=allVisits();
   var byP={};
@@ -542,24 +559,44 @@ function renderCoverage(){
   var visited=ALL_PEOPLE.filter(function(p){return byP[p.name]&&Object.keys(byP[p.name]).length>0;}).length;
   document.getElementById('cov-stats').innerHTML=
     '<div class="metric"><div class="metric-num">'+visits.length+'</div><div class="metric-label">Total visits</div></div>'+
-    '<div class="metric"><div class="metric-num">'+visited+'</div><div class="metric-label">People visited</div></div>'+
-    '<div class="metric"><div class="metric-num">'+(total-visited)+'</div><div class="metric-label">Yet to visit</div></div>'+
-    '<div class="metric"><div class="metric-num">&nbsp;</div><div class="metric-label">&nbsp;</div></div>';
-  var QS=['2526_Q1','2526_Q2','2526_Q3','2526_Q4','2627_Q1','2627_Q2','2627_Q3','2627_Q4'];
-  var rows='';
-  Object.entries(TEAM).forEach(function(entry){
+    '<div class="metric"><div class="metric-num">'+visited+'</div><div class="metric-label">People visited this FY</div></div>'+
+    '<div class="metric"><div class="metric-num">'+(total-visited)+'</div><div class="metric-label">Yet to visit</div></div>';
+
+  var QS=['2627_Q1','2627_Q2','2627_Q3','2627_Q4'];
+  var QLabels=['Q1 Jul\u2013Sep','Q2 Oct\u2013Dec','Q3 Jan\u2013Mar','Q4 Apr\u2013Jun'];
+
+  var html='';
+  Object.entries(TEAM).forEach(function(entry,idx){
     var g=entry[0];var ms=entry[1];
-    rows+='<tr class="group-hdr"><td colspan="10">'+g+'</td></tr>';
-    ms.forEach(function(name){
-      var pv=byP[name]||{};
-      var qc=QS.map(function(q){
-        var s=pv[q];
-        return '<td class="q-cell"><div class="q-dot '+(s?'q-done':'q-empty')+'" title="'+(s?s.join(', '):'')+'">'+( s?s.length:'&#8212;')+'</div></td>';
-      }).join('');
-      rows+='<tr><td style="font-weight:600">'+name+'</td><td style="font-size:11px;color:#888">'+(PERSON_GROUP[name]||'')+'</td>'+qc+'</tr>';
-    });
+    var teamVisited=ms.filter(function(n){return QS.some(function(q){return byP[n]&&byP[n][q];});}).length;
+    var teamId='team'+idx;
+    html+='<div class="team-cov-block">'+
+      '<div class="team-cov-header" onclick="toggleTeamCov(\''+teamId+'\')">'+
+        '<span class="team-cov-name">'+g+'</span>'+
+        '<span class="team-cov-summary">'+teamVisited+' / '+ms.length+' visited this FY</span>'+
+        '<span class="team-cov-chevron" id="cov-chev-'+teamId+'">&#9660;</span>'+
+      '</div>'+
+      '<div class="team-cov-body" id="cov-body-'+teamId+'">'+
+        '<table class="cov-table"><thead><tr>'+
+          '<th class="th-name" style="text-align:left;padding:8px 16px">Name</th>'+
+          QLabels.map(function(l){return '<th>'+l+'</th>';}).join('')+
+        '</tr></thead><tbody>'+
+        ms.map(function(name){
+          var pv=byP[name]||{};
+          var cells=QS.map(function(q){
+            var s=pv[q];
+            var tip=s?s.join(', '):'Not yet visited';
+            return '<td class="q-cell" title="'+tip+'">'+
+              (s?'<span class="q-tag done">'+s[0].charAt(0)+s[0].slice(1,12).toLowerCase()+'</span>':'<span class="q-tag empty">&mdash;</span>')+
+            '</td>';
+          }).join('');
+          return '<tr><td style="padding:8px 16px;font-size:13px">'+name+'</td>'+cells+'</tr>';
+        }).join('')+
+        '</tbody></table>'+
+      '</div>'+
+    '</div>';
   });
-  document.getElementById('cov-body').innerHTML=rows;
+  document.getElementById('cov-body').innerHTML=html;
 }
 
 // ── Submit visit ──────────────────────────────────────────────────
@@ -687,6 +724,10 @@ function submitVisit(){
     clearFeedbackPoints();
     resetChecklist();
     ['f-actions'].forEach(function(id){document.getElementById(id).value='';});
+    document.getElementById('f-store').value='';
+    document.getElementById('f-store-input').value='';
+    document.getElementById('f-person').value='';
+    document.getElementById('f-person-input').value='';
     var t=document.getElementById('toast');t.style.display='block';setTimeout(function(){t.style.display='none';},3000);
     showTab('feed',document.querySelector('.tab'));
   }).catch(function(e){
@@ -720,6 +761,9 @@ function submitSchedule(){
   saveScheduleToAT(item).then(function(){
     document.getElementById('s-notes').value='';
     document.getElementById('s-store').value='';
+    document.getElementById('s-store-input').value='';
+    document.getElementById('s-person').value='';
+    document.getElementById('s-person-input').value='';
     renderSchedule();
   });
 }
@@ -730,8 +774,12 @@ function deleteSchedule(id){
 
 function renderSchedule(){
   loadScheduleFromAT().then(function(items){
+  var today=new Date();today.setHours(0,0,0,0);
   items=items.filter(function(i){
-    return new Date(i.date) >= new Date(new Date().toDateString());
+    if(!i.date)return false;
+    var parts=i.date.split('-');
+    var d=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
+    return d>=today;
   }).sort(function(a,b){return new Date(a.date)-new Date(b.date);});
 
   var list=document.getElementById('schedule-list');
@@ -746,7 +794,8 @@ function renderSchedule(){
   var html='';
   var lastMonth='';
   items.forEach(function(it){
-    var d=new Date(it.date);
+    var parts=it.date.split('-');
+    var d=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
     var monthKey=monthNames[d.getMonth()]+' '+d.getFullYear();
     if(monthKey!==lastMonth){
       html+='<div class="sched-month">'+monthKey+'</div>';
@@ -769,39 +818,119 @@ function renderSchedule(){
 }
 
 // ── Init ──────────────────────────────────────────────────────────
-function init(){
-  var ps=document.getElementById('f-person');
+// ── Person search ─────────────────────────────────────────────────
+var PERSON_LIST=[];
+function buildPersonList(){
+  var list=[];
   Object.entries(TEAM).forEach(function(entry){
-    var og=document.createElement('optgroup');og.label=entry[0];
-    entry[1].forEach(function(m){var o=document.createElement('option');o.value=m;o.textContent=m;og.appendChild(o);});
-    ps.appendChild(og);
-  });
-  function populateStoreDropdown(selectEl){
-    var STATE_ORDER=['NSW','VIC','QLD','WA','SA','TAS','ACT','NT'];
-    STATE_ORDER.forEach(function(state){
-      if(!STORES_BY_STATE[state])return;
-      var og=document.createElement('optgroup');og.label=state;
-      STORES_BY_STATE[state].forEach(function(s){
-        var o=document.createElement('option');o.value=s;
-        o.textContent=(/^[a-z]/.test(s)?s:'FC '+s.charAt(0)+s.slice(1).toLowerCase());
-        og.appendChild(o);
-      });
-      selectEl.appendChild(og);
+    var g=entry[0];
+    entry[1].forEach(function(name){
+      list.push({name:name,group:g});
     });
+  });
+  return list;
+}
+function openPersonDropdown(prefix){
+  if(!PERSON_LIST.length)PERSON_LIST=buildPersonList();
+  filterPersonDropdown(prefix);
+  document.getElementById(prefix+'-person-dropdown').classList.add('open');
+}
+function closePersonDropdown(prefix){
+  setTimeout(function(){
+    var dd=document.getElementById(prefix+'-person-dropdown');
+    if(dd)dd.classList.remove('open');
+    // if they typed a custom name not in list, save it as-is under Other
+    var input=document.getElementById(prefix+'-person-input');
+    var hidden=document.getElementById(prefix+'-person');
+    if(input.value.trim()&&!hidden.value){
+      hidden.value=input.value.trim();
+      PERSON_GROUP[input.value.trim()]='Other';
+    }
+  },200);
+}
+function filterPersonDropdown(prefix){
+  if(!PERSON_LIST.length)PERSON_LIST=buildPersonList();
+  var input=document.getElementById(prefix+'-person-input');
+  var dropdown=document.getElementById(prefix+'-person-dropdown');
+  var query=input.value.toLowerCase().trim();
+  var filtered=query?PERSON_LIST.filter(function(p){return p.name.toLowerCase().indexOf(query)>=0||p.group.toLowerCase().indexOf(query)>=0;}):PERSON_LIST;
+  var html='';
+  var lastGroup='';
+  filtered.forEach(function(p){
+    if(p.group!==lastGroup){
+      html+='<div style="font-size:10px;font-weight:700;color:#aaa;text-transform:uppercase;padding:6px 12px 2px;letter-spacing:.4px">'+p.group+'</div>';
+      lastGroup=p.group;
+    }
+    html+='<div class="store-opt" onmousedown="selectPerson(\''+prefix+'\',\''+p.name+'\')">'+p.name+'</div>';
+  });
+  if(query&&!filtered.length){
+    html='<div class="store-opt" onmousedown="selectPerson(\''+prefix+'\',\''+query.charAt(0).toUpperCase()+query.slice(1)+'\')">Use &ldquo;'+query.charAt(0).toUpperCase()+query.slice(1)+'&rdquo; (Other)</div>';
+  } else if(query){
+    html+='<div class="store-opt" style="border-top:1px solid #f0f0f0" onmousedown="selectPerson(\''+prefix+'\',\''+query.charAt(0).toUpperCase()+query.slice(1)+'\')">Not listed? Use &ldquo;'+query.charAt(0).toUpperCase()+query.slice(1)+'&rdquo;</div>';
   }
-  populateStoreDropdown(document.getElementById('f-store'));
+  dropdown.innerHTML=html;
+  dropdown.classList.add('open');
+}
+function selectPerson(prefix,value){
+  document.getElementById(prefix+'-person').value=value;
+  document.getElementById(prefix+'-person-input').value=value;
+  if(!PERSON_GROUP[value])PERSON_GROUP[value]='Other';
+  document.getElementById(prefix+'-person-dropdown').classList.remove('open');
+}
+
+// ── Store search ──────────────────────────────────────────────────
+var STORE_LIST=[];
+function buildStoreList(){
+  var STATE_ORDER=['NSW','VIC','QLD','WA','SA','TAS','ACT','NT'];
+  var list=[];
+  STATE_ORDER.forEach(function(state){
+    if(!STORES_BY_STATE[state])return;
+    STORES_BY_STATE[state].forEach(function(s){
+      list.push({name:s,state:state,label:'FC '+s.charAt(0)+s.slice(1).toLowerCase()});
+    });
+  });
+  return list;
+}
+function openStoreDropdown(prefix){
+  if(!STORE_LIST.length)STORE_LIST=buildStoreList();
+  filterStoreDropdown(prefix);
+  document.getElementById(prefix+'-store-dropdown').classList.add('open');
+}
+function closeStoreDropdown(prefix){
+  setTimeout(function(){
+    document.getElementById(prefix+'-store-dropdown').classList.remove('open');
+  },200);
+}
+function filterStoreDropdown(prefix){
+  if(!STORE_LIST.length)STORE_LIST=buildStoreList();
+  var input=document.getElementById(prefix+'-store-input');
+  var dropdown=document.getElementById(prefix+'-store-dropdown');
+  var query=input.value.toLowerCase().trim();
+  var filtered=query?STORE_LIST.filter(function(s){return s.name.toLowerCase().indexOf(query)>=0||s.state.toLowerCase()===query;}):STORE_LIST;
+  if(!filtered.length){
+    dropdown.innerHTML='<div class="store-opt" style="color:#aaa;cursor:default">No stores found</div>';
+  }else{
+    dropdown.innerHTML=filtered.slice(0,80).map(function(s){
+      var safeName=s.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      var safeLabel=s.label.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      return '<div class="store-opt" onmousedown="selectStore(\''+prefix+'\',\''+safeName+'\',\''+safeLabel+'\')">'+
+        s.label+'<span class="store-opt-state">'+s.state+'</span></div>';
+    }).join('');
+  }
+  dropdown.classList.add('open');
+}
+function selectStore(prefix,value,label){
+  document.getElementById(prefix+'-store').value=value;
+  document.getElementById(prefix+'-store-input').value=label;
+  document.getElementById(prefix+'-store-dropdown').classList.remove('open');
+}
+
+function init(){
+  PERSON_LIST=buildPersonList();
+  STORE_LIST=buildStoreList();
   document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
   buildChecklistUI();
   addFeedbackPoint();
-
-  // Populate schedule form dropdowns too
-  var sp=document.getElementById('s-person');
-  Object.entries(TEAM).forEach(function(entry){
-    var og=document.createElement('optgroup');og.label=entry[0];
-    entry[1].forEach(function(m){var o=document.createElement('option');o.value=m;o.textContent=m;og.appendChild(o);});
-    sp.appendChild(og);
-  });
-  populateStoreDropdown(document.getElementById('s-store'));
   document.getElementById('s-date').value=new Date().toISOString().split('T')[0];
 
   // Load data from Airtable

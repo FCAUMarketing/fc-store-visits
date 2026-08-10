@@ -17,7 +17,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .tab:hover{color:#D40119}
 .tab.active{color:#D40119;border-bottom-color:#D40119}
 .main{max-width:960px;margin:0 auto;padding:24px}
-.card{background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:20px;margin-bottom:12px}
+.card{background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:20px;margin-bottom:12px;overflow:visible}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
 .form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
 .form-group label{font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.5px}
@@ -87,10 +87,10 @@ textarea{resize:vertical;min-height:72px}
 .divider{height:16px}
 .issue-flag{margin-left:auto;font-size:11px;color:#D40119;font-weight:600}
 .red-bar{height:4px;background:#D40119}
-.store-search-wrap{position:relative}
+.store-search-wrap{position:relative;z-index:10}
 .store-search-input{width:100%;padding:8px 10px;font-size:13px;border:1px solid #ddd;border-radius:6px;background:#fff;color:#1a1a1a;font-family:inherit}
 .store-search-input:focus{outline:none;border-color:#D40119;box-shadow:0 0 0 3px rgba(212,1,25,.1)}
-.store-dropdown{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #D40119;border-top:none;border-radius:0 0 6px 6px;max-height:220px;overflow-y:auto;z-index:999;display:none;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.store-dropdown{position:absolute;top:calc(100% + 2px);left:0;right:0;background:#fff;border:1px solid #D40119;border-radius:6px;max-height:240px;overflow-y:auto;z-index:9999;display:none;box-shadow:0 4px 16px rgba(0,0,0,.12)}
 .store-dropdown.open{display:block}
 .store-opt{padding:8px 12px;font-size:13px;color:#1a1a1a;cursor:pointer;border-bottom:0.5px solid #f0f0f0}
 .store-opt:hover{background:#fde8e8;color:#D40119}
